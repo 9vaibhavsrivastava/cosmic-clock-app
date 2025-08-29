@@ -173,7 +173,7 @@ function HeliocentricMap({rows}:{rows:OrbitalRow[]}){
       {/* Sun */}
       <circle cx={toPx(0)} cy={toPy(0)} r={5} fill="#f59e0b" stroke="#b45309" />
       {/* Orbits & planets */}
-      {rows.map((r,i)=> (
+      {rows.map((r)=> (
         <g key={r.name}>
           <circle cx={toPx(0)} cy={toPy(0)} r={r.a*scale} fill="none" stroke="#cbd5e1" />
           <circle cx={toPx(r.x)} cy={toPy(r.y)} r={4} fill="#1e40af" />
@@ -396,6 +396,11 @@ export default function CosmicClock(){
     const ang = mod(toDeg(Math.atan2(1,0)),360); checks.push({name:'atan2(1,0) deg = 90', pass: Math.abs(ang-90)<1e-9, got: ang.toFixed(6), expected: '90.000000'});
     // New: data source reachable/fallback
     checks.push({name:`Data source: ${dataSource}`, pass: dataSource==='model' || spiceStatus!=='error', got: spiceStatus, expected: 'model or spice(ok)'});
+
+    const expectedNames = getOrbitalBodies().map(b=>b.name).join(',');
+    const rowNames = rows.map(r=>r.name).join(',');
+    checks.push({ name: 'Rows cover all planets', pass: rowNames === expectedNames, got: rowNames, expected: expectedNames });
+    checks.push({ name: 'Moons list non-empty', pass: Object.keys(MOONS).length > 0, got: String(Object.keys(MOONS).length), expected: '> 0' });
 
     setTests(checks);
   }
